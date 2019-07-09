@@ -26,6 +26,18 @@ def breakdown():
     return render_template('breakdown.html', data=data)
 
 
+
+
+@frontend.route('/local-authority/<local_authority_id>/change-url')
+def change_url(local_authority_id):
+    url = f"{current_app.config['STATUS_API']}?organisation={local_authority_id}"
+    data = fetch_results(url)
+    data['results'].sort(key=lambda x: x['date'], reverse=True)
+    return render_template('change-url.html', local_authority_id=local_authority_id, data=data, url=url)
+
+
+
+
 @frontend.route('/local-authority/<local_authority_id>/result-details')
 def result_details_for_authority(local_authority_id):
     url = current_app.config['STATUS_API'] + '/?organisation=' + local_authority_id
