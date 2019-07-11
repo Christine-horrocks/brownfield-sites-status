@@ -1,0 +1,33 @@
+{% extends "dlf-base.html" %}
+
+{% from "./govuk-jinja-components/details/macro.jinja" import govukDetails -%}
+
+{% set mainClasses = "govuk-main-wrapper--l" %}
+
+{% block beforeContent %}
+{{ super()}}
+<a href="{{ url_for('frontend.breakdown') }}" class="govuk-back-link">Back to full list</a>
+{% endblock %}
+
+{% block content %}
+
+{%- set development_mode = request.args.get('development_mode') -%}
+
+<div class="govuk-grid-row">
+	<div class="govuk-grid-column-two-thirds">
+		<span class="govuk-caption-xl">You have updated the URL for</span>
+		<h1 class="govuk-heading-xl">
+		  Your update was successful
+		</h1>
+	</div>
+</div>
+ <h1>
+     Whooop!
+ </h1>
+
+
+{% endblock %}
+
+{% block bodyEnd %}
+
+{% endblock %}

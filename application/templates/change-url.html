@@ -1,4 +1,5 @@
 {% extends "dlf-base.html" %}
+{% from 'macros.html' import render_form %}
 
 {% from "./govuk-jinja-components/details/macro.jinja" import govukDetails -%}
 
@@ -15,17 +16,26 @@
 
 <div class="govuk-grid-row">
 	<div class="govuk-grid-column-two-thirds">
-		<span class="govuk-caption-xl">Validation result</span>
+		<span class="govuk-caption-xl">Update brownfield land register URL for</span>
 		<h1 class="govuk-heading-xl">
-		  {{ data.organisation | map_la_code_to_name }}
+		  {{ local_authority_id | map_la_code_to_name }}
 		</h1>
-
-		<p class="govuk-body-l lead-para">The brownfield land register for {{ data.organisation | map_la_code_to_name }} contains errors.</p>
 	</div>
 </div>
- <h1>
-     Hellooooooo
- </h1>
+
+<div class="app-prose-scope">
+	<form method="POST" action="{{ url_for('frontend.change_url', local_authority_id=local_authority_id) }}">
+		{{ form.csrf_token }}
+		<ul class="govuk-list">
+			{{ render_form(form.current_url) }}
+			{{ render_form(form.register_url) }}
+			{{ render_form(form.entry_date) }}
+			{{ render_form(form.end_date) }}
+		</ul>
+		<input type="submit" value="Submit" class="govuk-button">
+	</form>
+</div>
+
 
 {% endblock %}
 

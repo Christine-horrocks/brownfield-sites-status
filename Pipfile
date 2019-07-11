@@ -24,6 +24,8 @@ Werkzeug = "==0.15.4"
 Flask-Migrate = "==2.5.2"
 flask-sqlalchemy = "==2.4.0"
 sqlalchemy = "*"
+wtforms = "*"
+flask-wtf = "*"
 
 [requires]
 python_version = "3.7"

@@ -1,8 +1,9 @@
 from flask import (
     Blueprint,
     render_template,
-    current_app
-)
+    current_app,
+    request, url_for)
+from werkzeug.utils import redirect
 
 from application.frontend.utils import (
     data_standard_headers,
@@ -11,6 +12,7 @@ from application.frontend.utils import (
     summarise_results,
     sort_results
 )
+from application.forms import URLForm
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 
@@ -28,13 +30,23 @@ def breakdown():
 
 
 
-@frontend.route('/local-authority/<local_authority_id>/change-url')
+@frontend.route('/local-authority/<local_authority_id>/change-url', methods=['GET', 'POST'])
 def change_url(local_authority_id):
-    url = f"{current_app.config['STATUS_API']}?organisation={local_authority_id}"
-    data = fetch_results(url)
-    data['results'].sort(key=lambda x: x['date'], reverse=True)
-    return render_template('change-url.html', local_authority_id=local_authority_id, data=data, url=url)
+    form = URLForm()
+    if request.method == 'POST':
+        form = URLForm(obj=request.form)
+        if form.validate():
+            entry_data = form.data
+            print(entry_data)
+            return redirect(url_for('frontend.what_next'))
 
+    return render_template('change-url.html', local_authority_id=local_authority_id, form=form)
+
+
+
+@frontend.route('/what-next')
+def what_next():
+    return render_template('what-next.html')
 
 
 
