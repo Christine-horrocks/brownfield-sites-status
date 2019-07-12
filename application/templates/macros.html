@@ -1,3 +1,26 @@
 {% macro render_form(field) %}
-<li class="govuk-link">{{ field.label }}  {{ field }}</li> {% for error in field.errors %} <li class="govuk-error-message">{{ error }}</li> {% endfor %}
+
+<fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+    <h1 class="govuk-fieldset__heading">
+      {{ field.label }}
+    </h1>
+  </legend>
+
+  <div class="govuk-form-group">
+      {% for error in field.errors %}
+        <span id="address-postcode-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span>{{ error }}
+        </span>
+      {% endfor %}
+
+      {% if error in field.errors %}
+        {{ field(class_="govuk-input govuk-input--error") }}
+      {% else %}
+        {{ field(class_="govuk-input") }}
+      {% endif %}
+  </div>
+</fieldset>
 {% endmacro %}
+
+

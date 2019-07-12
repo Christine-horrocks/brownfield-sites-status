@@ -29,11 +29,12 @@
 		<ul class="govuk-list">
 			{{ render_form(form.current_url) }}
 			{{ render_form(form.register_url) }}
-			{{ render_form(form.entry_date) }}
-			{{ render_form(form.end_date) }}
 		</ul>
 		<input type="submit" value="Submit" class="govuk-button">
 	</form>
+	<button onclick="location.href='breakdown'" type="submit" class="govuk-button--secondary">
+        Cancel
+    </button>
 </div>
 
 

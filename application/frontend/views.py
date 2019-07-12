@@ -1,10 +1,10 @@
+import urllib.request, csv
 from flask import (
     Blueprint,
     render_template,
     current_app,
-    request, url_for)
-from werkzeug.utils import redirect
-
+    request, url_for
+)
 from application.frontend.utils import (
     data_standard_headers,
     fetch_results,
@@ -13,6 +13,8 @@ from application.frontend.utils import (
     sort_results
 )
 from application.forms import URLForm
+from io import StringIO
+from werkzeug.utils import redirect
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 
@@ -28,11 +30,9 @@ def breakdown():
     return render_template('breakdown.html', data=data)
 
 
-
-
 @frontend.route('/local-authority/<local_authority_id>/change-url', methods=['GET', 'POST'])
 def change_url(local_authority_id):
-    form = URLForm()
+    form = URLForm(current_url=_current_url(local_authority_id))
     if request.method == 'POST':
         form = URLForm(obj=request.form)
         if form.validate():
@@ -43,11 +43,18 @@ def change_url(local_authority_id):
     return render_template('change-url.html', local_authority_id=local_authority_id, form=form)
 
 
+def _current_url(local_authority_id):
+    brownfield_register_index_url = 'https://raw.githubusercontent.com/digital-land/alpha-data/master/mhclg-registers/brownfield-register-index.csv'
+    data = urllib.request.urlopen(brownfield_register_index_url).read().decode('utf-8')
+    data_file = StringIO(data)
+    csv_file = csv.reader(data_file)
+    for row in csv_file:
+        if row[0] == local_authority_id:
+            return row[1]
 
 @frontend.route('/what-next')
 def what_next():
     return render_template('what-next.html')
-
 
 
 @frontend.route('/local-authority/<local_authority_id>/result-details')
@@ -71,6 +78,7 @@ def _check(given, expected):
         else:
             checked_expected.append((field, False))
     return checked, checked_expected
+
 
 @frontend.route('/local-authority/<local_authority_id>/header-details')
 def header_details_for_authority(local_authority_id):
