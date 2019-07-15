@@ -9,12 +9,12 @@
 
   <div class="govuk-form-group">
       {% for error in field.errors %}
-        <span id="address-postcode-error" class="govuk-error-message">
+        <span class="govuk-error-message">
             <span class="govuk-visually-hidden">Error:</span>{{ error }}
         </span>
       {% endfor %}
 
-      {% if error in field.errors %}
+      {% if field.errors %}
         {{ field(class_="govuk-input govuk-input--error") }}
       {% else %}
         {{ field(class_="govuk-input") }}
@@ -22,5 +22,3 @@
   </div>
 </fieldset>
 {% endmacro %}
-
-
