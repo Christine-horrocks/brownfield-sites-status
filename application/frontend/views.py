@@ -1,10 +1,10 @@
-import urllib.request, csv
+import urllib.request, csv, requests
 from flask import (
     Blueprint,
     render_template,
     current_app,
-    request, url_for
-)
+    request, url_for,
+    session)
 from application.frontend.utils import (
     data_standard_headers,
     fetch_results,
@@ -32,13 +32,21 @@ def breakdown():
 
 @frontend.route('/local-authority/<local_authority_id>/change-url', methods=['GET', 'POST'])
 def change_url(local_authority_id):
-    form = URLForm(current_url=_current_url(local_authority_id))
+    current_url = _current_url(local_authority_id)
+    form = URLForm(current_url=current_url)
     if request.method == 'POST':
         form = URLForm(obj=request.form)
         if form.validate():
-            entry_data = form.data
-            print(entry_data)
-            return redirect(url_for('frontend.what_next'))
+            new_url = form.data['register_url']
+            api_request_url = 'https://8kx22p2dgg.execute-api.eu-west-2.amazonaws.com/dev/status?url='+new_url
+            api_response = requests.get(api_request_url).json()
+            print(api_response)
+            # TODO change the if statement to equals when finished developing
+            if api_response['statusCode'] != 200:
+                return redirect(url_for('frontend.what_next', local_authority_id=local_authority_id))
+            else:
+                session['tested_url'] = new_url
+                return redirect(url_for('frontend.url_update_error', local_authority_id=local_authority_id))
 
     return render_template('change-url.html', local_authority_id=local_authority_id, form=form)
 
@@ -52,9 +60,20 @@ def _current_url(local_authority_id):
         if row[0] == local_authority_id:
             return row[1]
 
-@frontend.route('/what-next')
-def what_next():
-    return render_template('what-next.html')
+
+@frontend.route('/local-authority/<local_authority_id>/url-update-error', methods=['GET', 'POST'])
+def url_update_error(local_authority_id):
+    current_url = _current_url(local_authority_id)
+    form = URLForm(current_url=current_url)
+    tested_url = session['tested_url']
+    return render_template('url-update-error.html', local_authority_id=local_authority_id, form=form, tested_url=tested_url)
+
+
+@frontend.route('/local-authority/<local_authority_id>/what-next')
+def what_next(local_authority_id):
+    url = _current_url(local_authority_id)
+
+    return render_template('what-next.html', url=url, local_authority_id=local_authority_id)
 
 
 @frontend.route('/local-authority/<local_authority_id>/result-details')

@@ -1,0 +1,55 @@
+{% extends "dlf-base.html" %}
+{% from 'macros.html' import render_form %}
+{% from "./govuk-jinja-components/details/macro.jinja" import govukDetails -%}
+
+{% set mainClasses = "govuk-main-wrapper--l" %}
+
+{% block beforeContent %}
+{{ super()}}
+<a href="{{ url_for('frontend.breakdown') }}" class="govuk-back-link">Back to full list</a>
+{% endblock %}
+
+{% block content %}
+
+{%- set development_mode = request.args.get('development_mode') -%}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">There was a problem updating the brownfield land register URL for</span>
+        <h1 class="govuk-heading-xl">
+            {{ local_authority_id | map_la_code_to_name }}
+        </h1>
+    </div>
+</div>
+
+<div class="app-prose-scope">
+    <form method="POST"
+          action="{{ url_for('frontend.url_update_error', local_authority_id=local_authority_id) }}">
+        {{ form.csrf_token }}
+        <ul class="govuk-list">
+            {{ render_form(form.current_url) }}
+            <div class="govuk-form-group govuk-form-group--error">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">
+                        Tested URL
+                    </h1>
+                </legend>
+                <span class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> This url does not return the expected response
+                </span>
+                <input class="govuk-input govuk-input--error" id="event-name" name="event-name" type="text" value="{{ tested_url }}">
+                <span class="govuk-label">Some sort of error message and guidance will go here? </span>
+            </div>
+            {{ render_form(form.register_url) }}
+        </ul>
+        <input type="submit" value="Submit" class="govuk-button">
+    </form>
+    <button onclick="location.href='{{ url_for('frontend.breakdown') }}'" type="submit" class="govuk-button--secondary">
+        Cancel
+    </button>
+</div>
+{% endblock %}
+
+{% block bodyEnd %}
+
+{% endblock %}

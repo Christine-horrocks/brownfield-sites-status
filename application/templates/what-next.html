@@ -6,24 +6,38 @@
 
 {% block beforeContent %}
 {{ super()}}
-<a href="{{ url_for('frontend.breakdown') }}" class="govuk-back-link">Back to full list</a>
 {% endblock %}
 
 {% block content %}
 
 {%- set development_mode = request.args.get('development_mode') -%}
 
-<div class="govuk-grid-row">
-	<div class="govuk-grid-column-two-thirds">
-		<span class="govuk-caption-xl">You have updated the URL for</span>
-		<h1 class="govuk-heading-xl">
-		  Your update was successful
-		</h1>
-	</div>
+<div class="govuk-panel govuk-panel--confirmation">
+  <h1 class="govuk-panel__title">
+    Update complete
+  </h1>
+  <div class="govuk-panel__body">
+    The url for
+      <strong>{{ local_authority_id | map_la_code_to_name }}'s</strong>
+      brownfield land register has been updated to
+      <br><strong style="overflow-wrap:break-word;">{{ url }}</strong>
+  </div>
 </div>
- <h1>
-     Whooop!
- </h1>
+
+<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+<h1 class="govuk-heading-xl">What happens next</h1>
+
+<p class="govuk-body">
+    This url has been added to the brownfield land register.
+    Over then next 24 hours, further checks will be done to ensure the content of the file at this url is in the correct format.
+    You will then be able to this website to check if your input has met government requirements.
+</p>
+
+
+<p class="govuk-body">
+  <a href="{{ url_for('frontend.breakdown') }}" class="govuk-link">Back to full list</a>
+</p>
 
 
 {% endblock %}
