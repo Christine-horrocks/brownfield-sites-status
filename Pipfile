@@ -26,6 +26,7 @@ flask-sqlalchemy = "==2.4.0"
 sqlalchemy = "*"
 wtforms = "*"
 flask-wtf = "*"
+boto3 = "*"
 
 [requires]
 python_version = "3.7"

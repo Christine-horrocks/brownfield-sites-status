@@ -1,4 +1,6 @@
-import urllib.request, csv, requests
+import urllib.request, csv, requests, boto3, uuid
+from json import JSONEncoder
+
 from flask import (
     Blueprint,
     render_template,
@@ -40,9 +42,19 @@ def change_url(local_authority_id):
             new_url = form.data['register_url']
             api_request_url = 'https://8kx22p2dgg.execute-api.eu-west-2.amazonaws.com/dev/status?url='+new_url
             api_response = requests.get(api_request_url).json()
-            print(api_response)
-            # TODO change the if statement to equals when finished developing
-            if api_response['statusCode'] != 200:
+            new_entry = {
+                'current_url': current_url,
+                'new_url': new_url,
+                'local_authority': local_authority_id
+            }
+            if api_response['statusCode'] == 200:
+                json_hash = JSONEncoder().encode(new_entry)
+                json_file_name = f'{local_authority_id}/{uuid.uuid4()}.json'
+                bucket = 'brownfield-push'
+
+                s3 = boto3.client('s3')
+                s3.put_object(Body=json_hash, Bucket=bucket, Key=json_file_name)
+
                 return redirect(url_for('frontend.what_next', local_authority_id=local_authority_id))
             else:
                 session['tested_url'] = new_url

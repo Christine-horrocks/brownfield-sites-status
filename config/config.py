@@ -10,6 +10,8 @@ class Config(object):
     STATUS_API = os.getenv('STATUS_API', 'https://8kx22p2dgg.execute-api.eu-west-2.amazonaws.com/dev/status')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    S3_BUCKET = os.getenv('S3_BUCKET')
+
 
 
 class DevelopmentConfig(Config):
