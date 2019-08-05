@@ -42,11 +42,11 @@
             </div>
             {{ render_form(form.register_url) }}
         </ul>
-        <input type="submit" value="Submit" class="govuk-button">
+        <div class="govuk-form-group">
+            <input type="submit" value="Submit" class="govuk-button">
+            <a href="{{ url_for('frontend.breakdown') }}" class="link-align-btn">Cancel</a>
+        </div>
     </form>
-    <button onclick="location.href='{{ url_for('frontend.breakdown') }}'" type="submit" class="govuk-button--secondary">
-        Cancel
-    </button>
 </div>
 {% endblock %}
 

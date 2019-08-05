@@ -28,7 +28,7 @@
 			<td class="govuk-table__cell" colspan="2">
                 {{ item.organisation | map_la_code_to_name }}
                 <p class="govuk-body-s"><a href="{{ url_for('frontend.local_authority_results', local_authority_id=item.organisation, development_mode=development_mode) }}">See past results</a></p>
-				<p class="govuk-body-s"><a href="{{ url_for('frontend.change_url', local_authority_id=item.organisation, development_mode=development_mode) }}">Change URL!!!!!!!!!</a></p>
+				<p class="govuk-body-s"><a href="{{ url_for('frontend.change_url', local_authority_id=item.organisation, development_mode=development_mode) }}">Change URL</a></p>
 
             </td>
 			{%- if not item.validated %}
