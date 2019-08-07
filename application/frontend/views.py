@@ -78,6 +78,29 @@ def url_update_error(local_authority_id):
     current_url = _current_url(local_authority_id)
     form = URLForm(current_url=current_url)
     tested_url = session['tested_url']
+    if request.method == 'POST':
+        form = URLForm(obj=request.form)
+        if form.validate():
+            new_url = form.data['register_url']
+            api_request_url = 'https://8kx22p2dgg.execute-api.eu-west-2.amazonaws.com/dev/status?url='+new_url
+            api_response = requests.get(api_request_url).json()
+            new_entry = {
+                'current_url': current_url,
+                'new_url': new_url,
+                'local_authority': local_authority_id
+            }
+            if api_response['statusCode'] == 200:
+                json_hash = JSONEncoder().encode(new_entry)
+                json_file_name = f'{local_authority_id}/{uuid.uuid4()}.json'
+                bucket = 'brownfield-push'
+
+                s3 = boto3.client('s3')
+                s3.put_object(Body=json_hash, Bucket=bucket, Key=json_file_name)
+
+                return redirect(url_for('frontend.what_next', local_authority_id=local_authority_id))
+            else:
+                session['tested_url'] = new_url
+                return redirect(url_for('frontend.url_update_error', local_authority_id=local_authority_id))
     return render_template('url-update-error.html', local_authority_id=local_authority_id, form=form, tested_url=tested_url)
 
 
